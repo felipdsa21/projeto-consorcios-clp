@@ -40,3 +40,29 @@ let rotaParticiparConsorcio =
         ctx.Participa.Add(novoParticipa) |> ignore
         ctx.SaveChanges() |> ignore
         OK "Usuário adicionado ao consórcio!")
+
+
+let rotaListarConsorcios =
+    GET
+    >=> path "/consorcios"
+    >=> fun _ ->
+        let ctx = new ConsorciosDbContext()
+        
+        // Recuperar todos os consórcios disponíveis
+        let consorcios =
+            ctx.Consorcios
+            |> Seq.toList
+
+        // Converter os consórcios em um formato JSON
+        let response =
+            consorcios |> List.map (fun c ->
+                { Id = c.Id
+                  Nome = c.Nome
+                  ValorTotal = c.ValorTotal
+                  DataInicio = c.DataInicio.ToString("yyyy-MM-dd")
+                  DataFim = c.DataFim.ToString("yyyy-MM-dd")
+                  NumeroParticipantes = c.NumeroParticipantes
+                  Status = c.Status
+                  Parcelas = c.Parcelas })
+
+        OK (toJson response)
