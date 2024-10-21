@@ -1,12 +1,12 @@
 module Database
 
 open Microsoft.EntityFrameworkCore
+open Microsoft.Extensions.Configuration
 open System
 open System.ComponentModel.DataAnnotations
 open System.ComponentModel.DataAnnotations.Schema
 
-let conexaoString =
-    "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=consorcios"
+let conexaoString = Startup.configuration.GetConnectionString("Consorcios")
 
 [<CLIMutable>]
 type Consorcio =
