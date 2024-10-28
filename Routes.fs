@@ -6,13 +6,14 @@ open Suave
 open Suave.Filters
 open Suave.Json
 open Suave.Operators
+open Suave.Successful
 open System
 
 let rotaCriarConsorcio options =
     POST
     >=> path "/consorcios"
     >=> mapJson (fun (reqData: RequestCriarConsorcio) ->
-        let novoConsorcio =
+        let novoConsorcio: Consorcio =
             { Id = 0
               Nome = reqData.Nome
               ValorTotal = reqData.ValorTotal
@@ -22,9 +23,9 @@ let rotaCriarConsorcio options =
               Status = reqData.Status
               Parcelas = reqData.Parcelas }
 
-        let ctx = new AppDbContext(options)
-        ctx.Consorcios.Add(novoConsorcio) |> ignore
-        ctx.SaveChanges() |> ignore
+        let db = new AppDbContext(options)
+        db.Consorcios.Add(novoConsorcio) |> ignore
+        db.SaveChanges() |> ignore
 
         let response: ResponseCriarConsorcio = { Id = novoConsorcio.Id }
         response)
@@ -34,18 +35,45 @@ let rotaParticiparConsorcio options =
     POST
     >=> pathScan "/consorcio/%d/participar" (fun consorcioId ->
         mapJson (fun (reqData: RequestParticiparConsorcio) ->
-            let novoParticipa =
+            let novoParticipa: Participa =
                 { UsuarioId = reqData.UsuarioId
                   ConsorcioId = consorcioId
                   DataEntrada = DateTime.Now
                   Status = "Participando" }
 
-            let ctx = new AppDbContext(options)
-            ctx.Participa.Add(novoParticipa) |> ignore
-            ctx.SaveChanges() |> ignore
+            let db = new AppDbContext(options)
+            db.Participa.Add(novoParticipa) |> ignore
+            db.SaveChanges() |> ignore
 
-            ResponseParticiparConsorcio()))
+            let response = ResponseParticiparConsorcio()
+            response))
+
+
+let rotaListarConsorcios options =
+    GET
+    >=> path "/consorcios"
+    >=> request (fun _ ->
+        let db = new AppDbContext(options)
+
+        let consorcios: ResponseConsorcio list =
+            db.Consorcios
+            |> Seq.toList
+            |> List.map (fun c ->
+                { Id = c.Id
+                  Nome = c.Nome
+                  ValorTotal = c.ValorTotal
+                  DataInicio = c.DataInicio.ToString("O")
+                  DataFim = c.DataFim.ToString("O")
+                  NumeroParticipantes = c.NumeroParticipantes
+                  Status = c.Status
+                  Parcelas = c.Parcelas })
+
+        let response: ResponseListarConsorcios = { Consorcios = consorcios }
+        ok (toJson response))
 
 
 let getRoutes options =
-    choose [ rotaCriarConsorcio options; rotaParticiparConsorcio options ]
+    choose
+        [ rotaCriarConsorcio options
+          rotaParticiparConsorcio options
+          rotaListarConsorcios options ]

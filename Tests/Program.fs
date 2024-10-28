@@ -59,6 +59,14 @@ let tests =
                   runWebServer ()
                   |> reqResp POST url "" reqData None DecompressionMethods.None id getResponse
 
+              Expect.equal HttpStatusCode.OK code "should not error"
+
+          testCase "listar consórcios"
+          <| fun _ ->
+              let code, res =
+                  runWebServer ()
+                  |> reqResp GET "/consorcios" "" None None DecompressionMethods.None id getResponse
+
               Expect.equal HttpStatusCode.OK code "should not error" ]
 
 
