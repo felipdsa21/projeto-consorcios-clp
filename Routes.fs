@@ -1,42 +1,51 @@
-module Routes
+module ConsorciosCLP.Routes
 
 open Database
+open Requests
+open Suave
 open Suave.Filters
 open Suave.Json
 open Suave.Operators
-open Suave.Successful
 open System
 
-let rotaCriarConsorcio =
+let rotaCriarConsorcio options =
     POST
-    >=> path "/consorcio/criar"
-    >=> mapJson (fun (form: Requests.RequestCriarConsorcio) ->
+    >=> path "/consorcios"
+    >=> mapJson (fun (reqData: RequestCriarConsorcio) ->
         let novoConsorcio =
             { Id = 0
-              Nome = form.Nome
-              ValorTotal = form.ValorTotal
-              DataInicio = DateOnly.Parse(form.DataInicio)
-              DataFim = DateOnly.Parse(form.DataFim)
-              NumeroParticipantes = form.NumeroParticipantes
-              Status = form.Status
-              Parcelas = form.Parcelas }
+              Nome = reqData.Nome
+              ValorTotal = reqData.ValorTotal
+              DataInicio = DateOnly.Parse(reqData.DataInicio)
+              DataFim = DateOnly.Parse(reqData.DataFim)
+              NumeroParticipantes = reqData.NumeroParticipantes
+              Status = reqData.Status
+              Parcelas = reqData.Parcelas }
 
-        let ctx = new ConsorciosDbContext()
+        let ctx = new AppDbContext(options)
         ctx.Consorcios.Add(novoConsorcio) |> ignore
         ctx.SaveChanges() |> ignore
-        OK "Consórcio criado com sucesso!")
+
+        let response: ResponseCriarConsorcio = { Id = novoConsorcio.Id }
+        response)
 
 
-let rotaParticiparConsorcio =
+let rotaParticiparConsorcio options =
     POST
-    >=> path "/consorcio/participar"
-    >=> mapJson (fun (form: Requests.RequestParticiparConsorcio) ->
-        let novoParticipa =
-            { UsuarioId = form.UsuarioId
-              ConsorcioId = form.ConsorcioId }
+    >=> pathScan "/consorcio/%d/participar" (fun consorcioId ->
+        mapJson (fun (reqData: RequestParticiparConsorcio) ->
+            let novoParticipa =
+                { UsuarioId = reqData.UsuarioId
+                  ConsorcioId = consorcioId
+                  DataEntrada = DateTime.Now
+                  Status = "Participando" }
 
-        let ctx = new ConsorciosDbContext()
+            let ctx = new AppDbContext(options)
+            ctx.Participa.Add(novoParticipa) |> ignore
+            ctx.SaveChanges() |> ignore
 
-        ctx.Participa.Add(novoParticipa) |> ignore
-        ctx.SaveChanges() |> ignore
-        OK "Usuário adicionado ao consórcio!")
+            ResponseParticiparConsorcio()))
+
+
+let getRoutes options =
+    choose [ rotaCriarConsorcio options; rotaParticiparConsorcio options ]

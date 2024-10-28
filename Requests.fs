@@ -1,4 +1,4 @@
-module Requests
+module ConsorciosCLP.Requests
 
 open System.Runtime.Serialization
 
@@ -30,14 +30,15 @@ type RequestCriarConsorcio =
 
 [<DataContract>]
 type ResponseCriarConsorcio =
-    { [<field: DataMember(Name = "status", IsRequired = true)>]
-      Status: string }
+    { [<field: DataMember(Name = "Id", IsRequired = true)>]
+      Id: int }
 
 
 [<DataContract>]
 type RequestParticiparConsorcio =
     { [<field: DataMember(Name = "usuario_id", IsRequired = true)>]
-      UsuarioId: int
+      UsuarioId: int }
 
-      [<field: DataMember(Name = "consorcio_id", IsRequired = true)>]
-      ConsorcioId: int }
+
+[<DataContract>]
+type ResponseParticiparConsorcio() = class end

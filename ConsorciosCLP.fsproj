@@ -5,7 +5,6 @@
     <RootNamespace>ConsorciosCLP</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Startup.fs" />
     <Compile Include="Database.fs" />
     <Compile Include="Requests.fs" />
     <Compile Include="Routes.fs" />
@@ -16,6 +15,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
     <PackageReference Include="Npgsql" Version="8.0.5" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.8" />
-    <PackageReference Include="Suave" Version="2.6.2" />
+    <PackageReference Include="Suave" Version="2.7.0-beta1" />
+    <PackageReference Include="System.IO.Pipelines" Version="8.0.0" />
   </ItemGroup>
 </Project>

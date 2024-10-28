@@ -1,12 +1,9 @@
-module Database
+module ConsorciosCLP.Database
 
 open Microsoft.EntityFrameworkCore
-open Microsoft.Extensions.Configuration
 open System
 open System.ComponentModel.DataAnnotations
 open System.ComponentModel.DataAnnotations.Schema
-
-let conexaoString = Startup.configuration.GetConnectionString("Consorcios")
 
 [<CLIMutable>]
 type Consorcio =
@@ -37,16 +34,21 @@ type Consorcio =
 
 
 [<CLIMutable>]
+[<PrimaryKey("UsuarioId", "ConsorcioId")>]
 type Participa =
-    { [<Required>]
-      UsuarioId: int
+    { UsuarioId: int
+
+      ConsorcioId: int
 
       [<Required>]
-      ConsorcioId: int }
+      DataEntrada: DateTime
+
+      [<Required>]
+      Status: string }
 
 
-type ConsorciosDbContext() =
-    inherit DbContext()
+type AppDbContext(options: DbContextOptions<AppDbContext>) =
+    inherit DbContext(options)
 
     [<DefaultValue>]
     val mutable consorcios: DbSet<Consorcio>
@@ -61,6 +63,3 @@ type ConsorciosDbContext() =
     member public this.Participa
         with get () = this.participa
         and set c = this.participa <- c
-
-    override __.OnConfiguring(optionsBuilder: DbContextOptionsBuilder) =
-        optionsBuilder.UseNpgsql(conexaoString) |> ignore
