@@ -22,7 +22,7 @@ let main argv =
     let conexaoString = config.GetConnectionString "Consorcios"
 
     let options =
-        DbContextOptionsBuilder<AppDbContext>().UseNpgsql(conexaoString).Options
+        DbContextOptionsBuilder<AppDbContext>().UseSqlite(conexaoString).Options
 
     createTables options |> ignore
     startWebServer defaultConfig (getRoutes options)
