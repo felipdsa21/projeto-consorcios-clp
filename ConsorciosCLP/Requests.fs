@@ -41,10 +41,6 @@ type RequestParticiparConsorcio =
 
 
 [<DataContract>]
-type ResponseParticiparConsorcio() = class end
-
-
-[<DataContract>]
 type ResponseConsorcio =
     { [<field: DataMember(Name = "id", IsRequired = true)>]
       Id: int

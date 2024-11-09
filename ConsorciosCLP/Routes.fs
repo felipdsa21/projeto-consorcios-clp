@@ -4,15 +4,15 @@ open Database
 open Requests
 open Suave
 open Suave.Filters
-open Suave.Json
 open Suave.Operators
 open Suave.Successful
 open System
+open Utils
 
 let rotaCriarConsorcio options =
     POST
     >=> path "/consorcios"
-    >=> mapJson (fun (reqData: RequestCriarConsorcio) ->
+    >=> jsonRequest (fun (reqData: RequestCriarConsorcio) ->
         let novoConsorcio: Consorcio =
             { Id = 0
               Nome = reqData.Nome
@@ -28,13 +28,13 @@ let rotaCriarConsorcio options =
         db.SaveChanges() |> ignore
 
         let response: ResponseCriarConsorcio = { Id = novoConsorcio.Id }
-        response)
+        jsonResponse ok response)
 
 
 let rotaParticiparConsorcio options =
     POST
     >=> pathScan "/consorcio/%d/participar" (fun consorcioId ->
-        mapJson (fun (reqData: RequestParticiparConsorcio) ->
+        jsonRequest (fun (reqData: RequestParticiparConsorcio) ->
             let novoParticipa: Participa =
                 { UsuarioId = reqData.UsuarioId
                   ConsorcioId = consorcioId
@@ -44,9 +44,7 @@ let rotaParticiparConsorcio options =
             let db = new AppDbContext(options)
             db.Participa.Add(novoParticipa) |> ignore
             db.SaveChanges() |> ignore
-
-            let response = ResponseParticiparConsorcio()
-            response))
+            OK ""))
 
 
 let rotaListarConsorcios options =
@@ -69,7 +67,7 @@ let rotaListarConsorcios options =
                   Parcelas = c.Parcelas })
 
         let response: ResponseListarConsorcios = { Consorcios = consorcios }
-        ok (toJson response))
+        jsonResponse ok response)
 
 
 let getRoutes options =

@@ -5,6 +5,7 @@
     <RootNamespace>ConsorciosCLP</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Utils.fs" />
     <Compile Include="Database.fs" />
     <Compile Include="Requests.fs" />
     <Compile Include="Routes.fs" />
