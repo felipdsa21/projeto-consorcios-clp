@@ -2,9 +2,11 @@
 - Microserviço de consórcios para o projeto Oxebanking
 - Implementação de testes básicos para as rotas do microserviço
 
+A documentação das rotas está no arquivo [Rotas.md](./Rotas.md).
+
 ## Como executar
 Primeiramente, instale o Microsoft .NET SDK 8.0.
-Baixe no site https://dotnet.microsoft.com/download ou, se usar Windows, execute:
+Baixe no site <https://dotnet.microsoft.com/download> ou, se usar Windows, execute:
 
 ```console
 winget install --exact --id Microsoft.DotNet.SDK.8
