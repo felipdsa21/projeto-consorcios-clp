@@ -42,7 +42,7 @@ let tests =
                     DataFim = DateTime(year, 12, 31).ToString "O"
                     LimiteParticipantes = 10
                     Status = "Criado"
-                    Parcelas = 5 }
+                    Parcelas = 12 }
                   |> inputToJson
 
               let code, res =

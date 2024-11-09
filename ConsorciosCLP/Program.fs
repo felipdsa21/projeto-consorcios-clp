@@ -25,5 +25,5 @@ let main argv =
         DbContextOptionsBuilder<AppDbContext>().UseSqlite(conexaoString).Options
 
     createTables options |> ignore
-    startWebServer defaultConfig (getRoutes options)
+    startWebServer routesConfig (getRoutes options)
     0

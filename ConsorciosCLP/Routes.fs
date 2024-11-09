@@ -7,6 +7,7 @@ open Suave
 open Suave.Filters
 open Suave.Operators
 open Suave.RequestErrors
+open Suave.ServerErrors
 open Suave.Successful
 open System
 open Utils
@@ -45,7 +46,7 @@ let rotaDetalharConsorcio options =
         let c = db.Consorcios.Find consorcioId
 
         if isNullObj c then
-            jsonResponse not_found { Mensagem = "Consórcio não existe" }
+            jsonResponse not_found { Mensagem = ERRO_CONSORCIO_NAO_EXISTE }
         else
             let response: ResponseDetalharConsorcio = consorcioToResponseConsorcio c
             jsonResponse ok response)
@@ -59,7 +60,7 @@ let rotaAlterarConsorcio options =
             let c = db.Consorcios.Find consorcioId
 
             if isNullObj c then
-                jsonResponse not_found { Mensagem = "Consórcio não existe" }
+                jsonResponse not_found { Mensagem = ERRO_CONSORCIO_NAO_EXISTE }
             else
                 let novoC = requestCriarConsorcioToConsorcio consorcioId reqData
                 db.Consorcios.Entry(c).CurrentValues.SetValues novoC |> ignore
@@ -78,19 +79,25 @@ let rotaParticiparEmConsorcio options =
             let today = DateOnly.FromDateTime now
 
             if isNullObj c then
-                jsonResponse not_found { Mensagem = "Consórcio não existe" }
+                jsonResponse not_found { Mensagem = ERRO_CONSORCIO_NAO_EXISTE }
             elif today.CompareTo c.DataInicio > 0 && today.CompareTo c.DataFim > 0 then
-                jsonResponse gone { Mensagem = "Fora de prazo" }
+                jsonResponse gone { Mensagem = ERRO_FORA_DO_PRAZO }
             else
-                let novoParticipa: Participa =
-                    { UsuarioId = reqData.UsuarioId
-                      ConsorcioId = consorcioId
-                      DataEntrada = now
-                      Status = "Participando" }
+                let qtdParticipantes =
+                    db.Participa |> Seq.filter (fun p -> p.ConsorcioId = consorcioId) |> Seq.length
 
-                db.Participa.Add novoParticipa |> ignore
-                db.SaveChanges() |> ignore
-                OK ""))
+                if qtdParticipantes > c.LimiteParticipantes then
+                    jsonResponse forbidden { Mensagem = ERRO_LIMITE_PARTICIPANTES_EXCEDIDO }
+                else
+                    let novoParticipa: Participa =
+                        { UsuarioId = reqData.UsuarioId
+                          ConsorcioId = consorcioId
+                          DataEntrada = now
+                          Status = "Participando" }
+
+                    db.Participa.Add novoParticipa |> ignore
+                    db.SaveChanges() |> ignore
+                    OK ""))
 
 
 let rotaListarParticipantes options =
@@ -100,7 +107,7 @@ let rotaListarParticipantes options =
         let c = db.Consorcios.Find consorcioId
 
         if isNullObj c then
-            jsonResponse not_found { Mensagem = "Consórcio não existe" }
+            jsonResponse not_found { Mensagem = ERRO_CONSORCIO_NAO_EXISTE }
         else
             let usuarios =
                 db.Participa
@@ -127,7 +134,14 @@ let rotaListarConsorciosParticipando options =
         jsonResponse ok response)
 
 
-let rotaNaoExiste = jsonResponse not_found { Mensagem = "Rota não existe" }
+let rotaNaoExiste = jsonResponse not_found { Mensagem = ERRO_ROTA_NAO_EXISTE }
+
+
+let rotaErro (ex: Exception) (msg: string) (ctx: HttpContext) =
+    jsonResponse internal_error { Mensagem = ex.Message } ctx
+
+
+let routesConfig = defaultConfig.withErrorHandler (rotaErro)
 
 
 let getRoutes options =
