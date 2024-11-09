@@ -1,10 +1,12 @@
 module ConsorciosCLP.Routes
 
 open Database
+open DomainDtoMapper
 open Requests
 open Suave
 open Suave.Filters
 open Suave.Operators
+open Suave.RequestErrors
 open Suave.Successful
 open System
 open Utils
@@ -13,38 +15,14 @@ let rotaCriarConsorcio options =
     POST
     >=> path "/consorcios"
     >=> jsonRequest (fun (reqData: RequestCriarConsorcio) ->
-        let novoConsorcio: Consorcio =
-            { Id = 0
-              Nome = reqData.Nome
-              ValorTotal = reqData.ValorTotal
-              DataInicio = DateOnly.Parse(reqData.DataInicio)
-              DataFim = DateOnly.Parse(reqData.DataFim)
-              NumeroParticipantes = reqData.NumeroParticipantes
-              Status = reqData.Status
-              Parcelas = reqData.Parcelas }
+        let c = requestCriarConsorcioToConsorcio 0 reqData
 
         let db = new AppDbContext(options)
-        db.Consorcios.Add(novoConsorcio) |> ignore
+        db.Consorcios.Add c |> ignore
         db.SaveChanges() |> ignore
 
-        let response: ResponseCriarConsorcio = { Id = novoConsorcio.Id }
+        let response: ResponseCriarConsorcio = { Id = c.Id }
         jsonResponse ok response)
-
-
-let rotaParticiparConsorcio options =
-    POST
-    >=> pathScan "/consorcio/%d/participar" (fun consorcioId ->
-        jsonRequest (fun (reqData: RequestParticiparConsorcio) ->
-            let novoParticipa: Participa =
-                { UsuarioId = reqData.UsuarioId
-                  ConsorcioId = consorcioId
-                  DataEntrada = DateTime.Now
-                  Status = "Participando" }
-
-            let db = new AppDbContext(options)
-            db.Participa.Add(novoParticipa) |> ignore
-            db.SaveChanges() |> ignore
-            OK ""))
 
 
 let rotaListarConsorcios options =
@@ -53,25 +31,112 @@ let rotaListarConsorcios options =
     >=> request (fun _ ->
         let db = new AppDbContext(options)
 
-        let consorcios: ResponseConsorcio list =
-            db.Consorcios
-            |> Seq.toList
-            |> List.map (fun c ->
-                { Id = c.Id
-                  Nome = c.Nome
-                  ValorTotal = c.ValorTotal
-                  DataInicio = c.DataInicio.ToString("O")
-                  DataFim = c.DataFim.ToString("O")
-                  NumeroParticipantes = c.NumeroParticipantes
-                  Status = c.Status
-                  Parcelas = c.Parcelas })
+        let consorcios =
+            db.Consorcios |> Seq.toList |> List.map consorcioToResponseConsorcio
 
         let response: ResponseListarConsorcios = { Consorcios = consorcios }
         jsonResponse ok response)
 
 
+let rotaDetalharConsorcio options =
+    GET
+    >=> pathScan "/consorcios/%d" (fun consorcioId ->
+        let db = new AppDbContext(options)
+        let c = db.Consorcios.Find consorcioId
+
+        if isNullObj c then
+            jsonResponse not_found { Mensagem = "Consórcio não existe" }
+        else
+            let response: ResponseDetalharConsorcio = consorcioToResponseConsorcio c
+            jsonResponse ok response)
+
+
+let rotaAlterarConsorcio options =
+    PUT
+    >=> pathScan "/consorcios/%d" (fun consorcioId ->
+        jsonRequest (fun (reqData: RequestCriarConsorcio) ->
+            let db = new AppDbContext(options)
+            let c = db.Consorcios.Find consorcioId
+
+            if isNullObj c then
+                jsonResponse not_found { Mensagem = "Consórcio não existe" }
+            else
+                let novoC = requestCriarConsorcioToConsorcio consorcioId reqData
+                db.Consorcios.Entry(c).CurrentValues.SetValues novoC |> ignore
+                db.SaveChanges() |> ignore
+                OK ""))
+
+
+let rotaParticiparEmConsorcio options =
+    POST
+    >=> pathScan "/consorcios/%d/participantes" (fun consorcioId ->
+        jsonRequest (fun (reqData: RequestParticiparEmConsorcio) ->
+            let db = new AppDbContext(options)
+            let c = db.Consorcios.Find consorcioId
+
+            let now = DateTime.Now
+            let today = DateOnly.FromDateTime now
+
+            if isNullObj c then
+                jsonResponse not_found { Mensagem = "Consórcio não existe" }
+            elif today.CompareTo c.DataInicio > 0 && today.CompareTo c.DataFim > 0 then
+                jsonResponse gone { Mensagem = "Fora de prazo" }
+            else
+                let novoParticipa: Participa =
+                    { UsuarioId = reqData.UsuarioId
+                      ConsorcioId = consorcioId
+                      DataEntrada = now
+                      Status = "Participando" }
+
+                db.Participa.Add novoParticipa |> ignore
+                db.SaveChanges() |> ignore
+                OK ""))
+
+
+let rotaListarParticipantes options =
+    GET
+    >=> pathScan "/consorcios/%d/participantes" (fun consorcioId ->
+        let db = new AppDbContext(options)
+        let c = db.Consorcios.Find consorcioId
+
+        if isNullObj c then
+            jsonResponse not_found { Mensagem = "Consórcio não existe" }
+        else
+            let usuarios =
+                db.Participa
+                |> Seq.filter (fun p -> p.ConsorcioId = consorcioId)
+                |> Seq.map (fun p -> p.UsuarioId)
+                |> Seq.toList
+
+            let response: ResponseListarParticipantes = { Usuarios = usuarios }
+            jsonResponse ok response)
+
+
+let rotaListarConsorciosParticipando options =
+    GET
+    >=> pathScan "/participantes/%d" (fun participanteId ->
+        let db = new AppDbContext(options)
+
+        let consorcios =
+            db.Participa
+            |> Seq.filter (fun p -> p.UsuarioId = participanteId)
+            |> Seq.map (fun p -> p.ConsorcioId)
+            |> Seq.toList
+
+        let response: ResponseListarConsorciosParticipando = { Consorcios = consorcios }
+        jsonResponse ok response)
+
+
+let rotaNaoExiste = jsonResponse not_found { Mensagem = "Rota não existe" }
+
+
 let getRoutes options =
     choose
         [ rotaCriarConsorcio options
-          rotaParticiparConsorcio options
-          rotaListarConsorcios options ]
+          rotaDetalharConsorcio options
+          rotaListarConsorcios options
+          rotaAlterarConsorcio options
+          rotaParticiparEmConsorcio options
+          rotaListarParticipantes options
+          rotaListarConsorciosParticipando options
+          rotaNaoExiste ]

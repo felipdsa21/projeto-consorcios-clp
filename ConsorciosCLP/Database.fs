@@ -15,30 +15,30 @@ type Consorcio =
       Nome: string
 
       [<Required>]
-      ValorTotal: float
-
-      [<Required>]
       DataInicio: DateOnly
 
       [<Required>]
       DataFim: DateOnly
 
       [<Required>]
-      NumeroParticipantes: int
+      ValorTotal: float
 
       [<Required>]
-      Status: string
+      Parcelas: int
 
       [<Required>]
-      Parcelas: int }
+      LimiteParticipantes: int
+
+      [<Required>]
+      Status: string }
 
 
 [<CLIMutable>]
 [<PrimaryKey("UsuarioId", "ConsorcioId")>]
 type Participa =
-    { UsuarioId: int
+    { ConsorcioId: int
 
-      ConsorcioId: int
+      UsuarioId: int
 
       [<Required>]
       DataEntrada: DateTime

@@ -8,6 +8,7 @@
     <Compile Include="Utils.fs" />
     <Compile Include="Database.fs" />
     <Compile Include="Requests.fs" />
+    <Compile Include="DomainDtoMapper.fs" />
     <Compile Include="Routes.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
