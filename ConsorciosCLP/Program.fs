@@ -7,6 +7,10 @@ open Routes
 open Suave
 open System.IO
 
+let createTables options =
+    let db = new AppDbContext(options)
+    db.Database.EnsureCreated()
+
 [<EntryPoint>]
 let main argv =
     let config =
@@ -15,10 +19,11 @@ let main argv =
             .AddJsonFile("appsettings.json")
             .Build()
 
-    let conexaoString = config.GetConnectionString("Consorcios")
+    let conexaoString = config.GetConnectionString "Consorcios"
 
     let options =
         DbContextOptionsBuilder<AppDbContext>().UseNpgsql(conexaoString).Options
 
+    createTables options |> ignore
     startWebServer defaultConfig (getRoutes options)
     0
