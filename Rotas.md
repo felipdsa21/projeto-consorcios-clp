@@ -18,12 +18,16 @@ POST /consorcios
 ```json
 {
   "nome": "Consórcio",
-  "valor_total": 10000,
+  "descricao": "Lorem ipsum",
+  "imagem": "",
   "data_inicio": "2024-01-01",
   "data_fim": "2024-12-31",
+  "valor_total": 10000,
+  "taxa_administrativa": 5,
+  "taxa_fundo_reserva": 10,
+  "qtd_parcelas": 12,
   "limite_participantes": 10,
-  "status": "Criado",
-  "parcelas": 12
+  "status": "Criado"
 }
 ```
 
@@ -44,12 +48,16 @@ GET /consorcios
     {
       "id": 1,
       "nome": "Consórcio",
-      "valor_total": 10000,
+      "descricao": "Lorem ipsum",
+      "imagem": "",
       "data_inicio": "2024-01-01",
       "data_fim": "2024-12-31",
+      "valor_total": 10000,
+      "taxa_administrativa": 5,
+      "taxa_fundo_reserva": 10,
+      "qtd_parcelas": 12,
       "limite_participantes": 10,
-      "status": "Criado",
-      "parcelas": 12
+      "status": "Criado"
     }
   ]
 }
@@ -65,12 +73,16 @@ GET /consorcios/{consorcio_id}
 {
   "id": 1,
   "nome": "Consórcio",
-  "valor_total": 10000,
+  "descricao": "Lorem ipsum",
+  "imagem": "",
   "data_inicio": "2024-01-01",
   "data_fim": "2024-12-31",
+  "valor_total": 10000,
+  "taxa_administrativa": 5,
+  "taxa_fundo_reserva": 10,
+  "qtd_parcelas": 12,
   "limite_participantes": 10,
-  "status": "Criado",
-  "parcelas": 12
+  "status": "Criado"
 }
 ```
 
@@ -86,12 +98,16 @@ PUT /consorcios/{consorcio_id}
 ```json
 {
   "nome": "Consórcio Editado",
-  "valor_total": 20000,
+  "descricao": "Sit dolor amet",
+  "imagem": "",
   "data_inicio": "2024-01-01",
   "data_fim": "2024-12-31",
+  "valor_total": 20000,
+  "taxa_administrativa": 10,
+  "taxa_fundo_reserva": 3,
+  "qtd_parcelas": 12,
   "limite_participantes": 15,
-  "status": "Criado",
-  "parcelas": 12
+  "status": "Criado"
 }
 ```
 

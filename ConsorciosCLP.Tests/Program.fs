@@ -39,12 +39,16 @@ let tests =
 
               let reqData =
                   { Nome = "Consórcio"
+                    Descricao = "Lorem ipsum"
+                    Imagem = ""
                     ValorTotal = 100
                     DataInicio = DateTime(year, 1, 1).ToString "O"
                     DataFim = DateTime(year, 12, 31).ToString "O"
+                    QtdParcelas = 12
+                    TaxaAdministrativa = 5
+                    TaxaFundoReserva = 10
                     LimiteParticipantes = 10
-                    Status = "Criado"
-                    Parcelas = 12 }
+                    Status = "Criado" }
                   |> objToJson
 
               let code, res =
@@ -87,12 +91,16 @@ let tests =
 
               let reqData =
                   { Nome = "Consórcio 2.0"
-                    ValorTotal = 200
+                    Descricao = "Sit dolor amet"
+                    Imagem = ""
                     DataInicio = DateTime(year, 1, 1).ToString "O"
                     DataFim = DateTime(year, 12, 31).ToString "O"
+                    ValorTotal = 200
+                    TaxaAdministrativa = 10
+                    TaxaFundoReserva = 3
+                    QtdParcelas = 10
                     LimiteParticipantes = 15
-                    Status = "Criado"
-                    Parcelas = 10 }
+                    Status = "Criado" }
                   |> objToJson
 
               let code, res =

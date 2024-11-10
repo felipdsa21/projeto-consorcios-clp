@@ -19,6 +19,12 @@ type RequestAlterarConsorcio =
     { [<field: DataMember(Name = "nome", IsRequired = true)>]
       Nome: string
 
+      [<field: DataMember(Name = "descricao", IsRequired = true)>]
+      Descricao: string
+
+      [<field: DataMember(Name = "imagem", IsRequired = true)>]
+      Imagem: string
+
       // Should be parsed as DateOnly
       [<field: DataMember(Name = "data_inicio", IsRequired = true)>]
       DataInicio: string
@@ -30,8 +36,14 @@ type RequestAlterarConsorcio =
       [<field: DataMember(Name = "valor_total", IsRequired = true)>]
       ValorTotal: float
 
-      [<field: DataMember(Name = "parcelas", IsRequired = true)>]
-      Parcelas: int
+      [<field: DataMember(Name = "taxa_administrativa", IsRequired = true)>]
+      TaxaAdministrativa: float
+
+      [<field: DataMember(Name = "taxa_fundo_reserva", IsRequired = true)>]
+      TaxaFundoReserva: float
+
+      [<field: DataMember(Name = "qtd_parcelas", IsRequired = true)>]
+      QtdParcelas: int
 
       [<field: DataMember(Name = "limite_participantes", IsRequired = true)>]
       LimiteParticipantes: int
@@ -54,6 +66,12 @@ type ResponseDetalharConsorcio =
       [<field: DataMember(Name = "nome", IsRequired = true)>]
       Nome: string
 
+      [<field: DataMember(Name = "descricao", IsRequired = true)>]
+      Descricao: string
+
+      [<field: DataMember(Name = "imagem", IsRequired = true)>]
+      Imagem: string
+
       [<field: DataMember(Name = "data_inicio", IsRequired = true)>]
       DataInicio: string
 
@@ -63,8 +81,14 @@ type ResponseDetalharConsorcio =
       [<field: DataMember(Name = "valor_total", IsRequired = true)>]
       ValorTotal: float
 
-      [<field: DataMember(Name = "parcelas", IsRequired = true)>]
-      Parcelas: int
+      [<field: DataMember(Name = "valor_administrativa", IsRequired = true)>]
+      TaxaAdministrativa: float
+
+      [<field: DataMember(Name = "valor_fundo_reserva", IsRequired = true)>]
+      TaxaFundoReserva: float
+
+      [<field: DataMember(Name = "qtd_parcelas", IsRequired = true)>]
+      QtdParcelas: int
 
       [<field: DataMember(Name = "limite_participantes", IsRequired = true)>]
       LimiteParticipantes: int

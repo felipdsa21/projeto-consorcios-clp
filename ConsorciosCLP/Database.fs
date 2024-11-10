@@ -15,6 +15,12 @@ type Consorcio() =
     member val Nome = "" with get, set
 
     [<Required>]
+    member val Descricao = "" with get, set
+
+    [<Required>]
+    member val Imagem = "" with get, set
+
+    [<Required>]
     member val DataInicio = DateOnly.MinValue with get, set
 
     [<Required>]
@@ -24,7 +30,13 @@ type Consorcio() =
     member val ValorTotal = 0.0 with get, set
 
     [<Required>]
-    member val Parcelas = 0 with get, set
+    member val TaxaAdministrativa = 0.0 with get, set
+
+    [<Required>]
+    member val TaxaFundoReserva = 0.0 with get, set
+
+    [<Required>]
+    member val QtdParcelas = 0 with get, set
 
     [<Required>]
     member val LimiteParticipantes = 0 with get, set
