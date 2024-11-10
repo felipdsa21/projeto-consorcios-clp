@@ -11,6 +11,7 @@ open Suave.Json
 open System
 open System.Net
 open System.Net.Http
+open System.Text
 open Testing
 
 [<Tests>]
@@ -24,7 +25,8 @@ let tests =
             .Options
 
     let runWebServer () = runWith config (getRoutes options)
-    let inputToJson obj = Some(new ByteArrayContent(toJson obj))
+    let objToJson obj = Some(new ByteArrayContent(toJson obj))
+    let jsonToObj (json: string) = fromJson (Encoding.UTF8.GetBytes json)
 
     let getResponse (res: HttpResponseMessage) =
         res.StatusCode, res.Content.ReadAsStringAsync().Result
@@ -43,13 +45,16 @@ let tests =
                     LimiteParticipantes = 10
                     Status = "Criado"
                     Parcelas = 12 }
-                  |> inputToJson
+                  |> objToJson
 
               let code, res =
                   runWebServer ()
                   |> reqResp POST "/consorcios" "" reqData None DecompressionMethods.None id getResponse
 
               Expect.equal HttpStatusCode.OK code "should not error"
+              jsonToObj res
+              : ResponseCriarConsorcio
+              |> ignore
 
           testCase "listar consórcios"
           <| fun _ ->
@@ -58,6 +63,9 @@ let tests =
                   |> reqResp GET "/consorcios" "" None None DecompressionMethods.None id getResponse
 
               Expect.equal HttpStatusCode.OK code "should not error"
+              jsonToObj res
+              : ResponseListarConsorcios
+              |> ignore
 
           testCase "detalhar um consórcio"
           <| fun _ ->
@@ -68,6 +76,9 @@ let tests =
                   |> reqResp GET url "" None None DecompressionMethods.None id getResponse
 
               Expect.equal HttpStatusCode.OK code "should not error"
+              jsonToObj res
+              : ResponseDetalharConsorcio
+              |> ignore
 
           testCase "alterar consórcio"
           <| fun _ ->
@@ -82,17 +93,18 @@ let tests =
                     LimiteParticipantes = 15
                     Status = "Criado"
                     Parcelas = 10 }
-                  |> inputToJson
+                  |> objToJson
 
               let code, res =
                   runWebServer ()
                   |> reqResp PUT url "" reqData None DecompressionMethods.None id getResponse
 
               Expect.equal HttpStatusCode.OK code "should not error"
+              Expect.equal "" res "response should be empty"
 
           testCase "participar em um consórcio"
           <| fun _ ->
-              let reqData = { UsuarioId = 1 } |> inputToJson
+              let reqData = { UsuarioId = 1 } |> objToJson
               let url = sprintf "/consorcios/%d/participantes" 1
 
               let code, res =
@@ -100,7 +112,7 @@ let tests =
                   |> reqResp POST url "" reqData None DecompressionMethods.None id getResponse
 
               Expect.equal HttpStatusCode.OK code "should not error"
-
+              Expect.equal "" res "response should be empty"
 
           testCase "listar participantes do consórcio"
           <| fun _ ->
@@ -111,6 +123,9 @@ let tests =
                   |> reqResp GET url "" None None DecompressionMethods.None id getResponse
 
               Expect.equal HttpStatusCode.OK code "should not error"
+              jsonToObj res
+              : ResponseListarParticipantes
+              |> ignore
 
           testCase "listar consórcio em que o usuário participa"
           <| fun _ ->
@@ -120,7 +135,10 @@ let tests =
                   runWebServer ()
                   |> reqResp GET url "" None None DecompressionMethods.None id getResponse
 
-              Expect.equal HttpStatusCode.OK code "should not error" ]
+              Expect.equal HttpStatusCode.OK code "should not error"
+              jsonToObj res
+              : ResponseListarConsorciosParticipando
+              |> ignore ]
 
 
 [<EntryPoint>]
