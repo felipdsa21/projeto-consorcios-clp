@@ -37,6 +37,8 @@ type Consorcio() =
 type Participa() =
     member val ConsorcioId = 0 with get, set
 
+    member val Consorcio = Unchecked.defaultof<Consorcio> with get, set
+
     member val UsuarioId = 0 with get, set
 
     [<Required>]

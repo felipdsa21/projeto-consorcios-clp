@@ -32,7 +32,6 @@ let rotaListarConsorcios options =
     >=> path "/consorcios"
     >=> request (fun _ ->
         let db = new AppDbContext(options)
-
         let consorcios = db.Consorcios |> Seq.toList |> List.map consorcioToResponse
 
         let response: ResponseListarConsorcios = { Consorcios = consorcios }
@@ -62,10 +61,24 @@ let rotaAlterarConsorcio options =
             if isNullObj c then
                 jsonResponse not_found { Mensagem = ERRO_CONSORCIO_NAO_EXISTE }
             else
-                let novoC = updateConsorcioFromRequest reqData c
-                db.Consorcios.Update(c) |> ignore
+                updateConsorcioFromRequest reqData c
+                db.Consorcios.Update c |> ignore
                 db.SaveChanges() |> ignore
                 OK ""))
+
+
+let rotaApagarConsorcio options =
+    DELETE
+    >=> pathScan "/consorcios/%d" (fun consorcioId ->
+        let db = new AppDbContext(options)
+        let c = db.Consorcios.Find consorcioId
+
+        if isNullObj c then
+            jsonResponse not_found { Mensagem = ERRO_CONSORCIO_NAO_EXISTE }
+        else
+            db.Consorcios.Remove(c) |> ignore
+            db.SaveChanges() |> ignore
+            OK "")
 
 
 let rotaParticiparEmConsorcio options =
@@ -150,6 +163,7 @@ let getRoutes options =
           rotaDetalharConsorcio options
           rotaListarConsorcios options
           rotaAlterarConsorcio options
+          rotaApagarConsorcio options
           rotaParticiparEmConsorcio options
           rotaListarParticipantes options
           rotaListarConsorciosParticipando options

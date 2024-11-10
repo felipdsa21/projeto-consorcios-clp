@@ -98,6 +98,14 @@ PUT /consorcios/{consorcio_id}
 ### Erros:
 - 404 Consórcio não existe
 
+## Apagar um consórcio
+```http
+DELETE /consorcios/{consorcio_id}
+```
+
+### Erros:
+- 404 Consórcio não existe
+
 ## Participar em um consórcio
 ```http
 POST /consorcios/{consorcio_id}/participantes
