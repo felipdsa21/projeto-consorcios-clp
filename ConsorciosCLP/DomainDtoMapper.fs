@@ -4,18 +4,18 @@ open Database
 open Requests
 open System
 
-let requestCriarConsorcioToConsorcio id (r: RequestCriarConsorcio) : Consorcio =
-    { Id = id
-      Nome = r.Nome
-      DataInicio = DateOnly.Parse r.DataInicio
-      DataFim = DateOnly.Parse r.DataFim
-      ValorTotal = r.ValorTotal
-      Parcelas = r.Parcelas
-      LimiteParticipantes = r.LimiteParticipantes
-      Status = r.Status }
+
+let updateConsorcioFromRequest (r: RequestAlterarConsorcio) (c: Consorcio) =
+    c.Nome <- r.Nome
+    c.DataInicio <- DateOnly.Parse r.DataInicio
+    c.DataFim <- DateOnly.Parse r.DataFim
+    c.ValorTotal <- r.ValorTotal
+    c.Parcelas <- r.Parcelas
+    c.LimiteParticipantes <- r.LimiteParticipantes
+    c.Status <- r.Status
 
 
-let consorcioToResponseConsorcio (c: Consorcio) : ResponseDetalharConsorcio =
+let consorcioToResponse (c: Consorcio) : ResponseDetalharConsorcio =
     { Id = c.Id
       Nome = c.Nome
       DataInicio = c.DataInicio.ToString "O"

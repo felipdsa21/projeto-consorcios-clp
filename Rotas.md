@@ -55,7 +55,7 @@ GET /consorcios
 }
 ```
 
-## Detalhar consórcio
+## Detalhar um consórcio
 ```http
 GET /consorcios/{consorcio_id}
 ```
@@ -130,9 +130,9 @@ GET /consorcios/{consorcio_id}/participantes
 ### Erros:
 - 404 Consórcio não existe
 
-## Listar consórcios do participante
+## Listar consórcios em que o usuário participa
 ```http
-GET /participantes/{participante_id}
+GET /participantes/{usuario_id}
 ```
 
 ### Corpo da resposta:

@@ -31,7 +31,7 @@ let tests =
 
     testList
         "rotas básicas"
-        [ testCase "criar consórcio"
+        [ testCase "criar um consórcio"
           <| fun _ ->
               let year = DateTime.Now.Year
 
@@ -51,21 +51,21 @@ let tests =
 
               Expect.equal HttpStatusCode.OK code "should not error"
 
-          testCase "detalhes do consórcio"
+          testCase "listar consórcios"
+          <| fun _ ->
+              let code, res =
+                  runWebServer ()
+                  |> reqResp GET "/consorcios" "" None None DecompressionMethods.None id getResponse
+
+              Expect.equal HttpStatusCode.OK code "should not error"
+
+          testCase "detalhar um consórcio"
           <| fun _ ->
               let url = sprintf "/consorcios/%d" 1
 
               let code, res =
                   runWebServer ()
                   |> reqResp GET url "" None None DecompressionMethods.None id getResponse
-
-              Expect.equal HttpStatusCode.OK code "should not error"
-
-          testCase "listar consórcios"
-          <| fun _ ->
-              let code, res =
-                  runWebServer ()
-                  |> reqResp GET "/consorcios" "" None None DecompressionMethods.None id getResponse
 
               Expect.equal HttpStatusCode.OK code "should not error"
 
@@ -90,7 +90,7 @@ let tests =
 
               Expect.equal HttpStatusCode.OK code "should not error"
 
-          testCase "participar do consórcio"
+          testCase "participar em um consórcio"
           <| fun _ ->
               let reqData = { UsuarioId = 1 } |> inputToJson
               let url = sprintf "/consorcios/%d/participantes" 1

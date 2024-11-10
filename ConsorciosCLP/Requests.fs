@@ -15,7 +15,7 @@ type ResponseErro =
 
 
 [<DataContract>]
-type RequestCriarConsorcio =
+type RequestAlterarConsorcio =
     { [<field: DataMember(Name = "nome", IsRequired = true)>]
       Nome: string
 
@@ -44,12 +44,6 @@ type RequestCriarConsorcio =
 type ResponseCriarConsorcio =
     { [<field: DataMember(Name = "id", IsRequired = true)>]
       Id: int }
-
-
-[<DataContract>]
-type RequestParticiparEmConsorcio =
-    { [<field: DataMember(Name = "usuario_id", IsRequired = true)>]
-      UsuarioId: int }
 
 
 [<DataContract>]
@@ -83,6 +77,12 @@ type ResponseDetalharConsorcio =
 type ResponseListarConsorcios =
     { [<field: DataMember(Name = "consorcios", IsRequired = true)>]
       Consorcios: ResponseDetalharConsorcio list }
+
+
+[<DataContract>]
+type RequestParticiparEmConsorcio =
+    { [<field: DataMember(Name = "usuario_id", IsRequired = true)>]
+      UsuarioId: int }
 
 
 [<DataContract>]

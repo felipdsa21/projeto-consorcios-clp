@@ -15,8 +15,9 @@ open Utils
 let rotaCriarConsorcio options =
     POST
     >=> path "/consorcios"
-    >=> jsonRequest (fun (reqData: RequestCriarConsorcio) ->
-        let c = requestCriarConsorcioToConsorcio 0 reqData
+    >=> jsonRequest (fun (reqData: RequestAlterarConsorcio) ->
+        let c = Consorcio()
+        updateConsorcioFromRequest reqData c
 
         let db = new AppDbContext(options)
         db.Consorcios.Add c |> ignore
@@ -32,8 +33,7 @@ let rotaListarConsorcios options =
     >=> request (fun _ ->
         let db = new AppDbContext(options)
 
-        let consorcios =
-            db.Consorcios |> Seq.toList |> List.map consorcioToResponseConsorcio
+        let consorcios = db.Consorcios |> Seq.toList |> List.map consorcioToResponse
 
         let response: ResponseListarConsorcios = { Consorcios = consorcios }
         jsonResponse ok response)
@@ -48,22 +48,22 @@ let rotaDetalharConsorcio options =
         if isNullObj c then
             jsonResponse not_found { Mensagem = ERRO_CONSORCIO_NAO_EXISTE }
         else
-            let response: ResponseDetalharConsorcio = consorcioToResponseConsorcio c
+            let response: ResponseDetalharConsorcio = consorcioToResponse c
             jsonResponse ok response)
 
 
 let rotaAlterarConsorcio options =
     PUT
     >=> pathScan "/consorcios/%d" (fun consorcioId ->
-        jsonRequest (fun (reqData: RequestCriarConsorcio) ->
+        jsonRequest (fun (reqData: RequestAlterarConsorcio) ->
             let db = new AppDbContext(options)
             let c = db.Consorcios.Find consorcioId
 
             if isNullObj c then
                 jsonResponse not_found { Mensagem = ERRO_CONSORCIO_NAO_EXISTE }
             else
-                let novoC = requestCriarConsorcioToConsorcio consorcioId reqData
-                db.Consorcios.Entry(c).CurrentValues.SetValues novoC |> ignore
+                let novoC = updateConsorcioFromRequest reqData c
+                db.Consorcios.Update(c) |> ignore
                 db.SaveChanges() |> ignore
                 OK ""))
 
@@ -89,11 +89,11 @@ let rotaParticiparEmConsorcio options =
                 if qtdParticipantes > c.LimiteParticipantes then
                     jsonResponse forbidden { Mensagem = ERRO_LIMITE_PARTICIPANTES_EXCEDIDO }
                 else
-                    let novoParticipa: Participa =
-                        { UsuarioId = reqData.UsuarioId
-                          ConsorcioId = consorcioId
-                          DataEntrada = now
-                          Status = "Participando" }
+                    let novoParticipa = Participa()
+                    novoParticipa.UsuarioId <- reqData.UsuarioId
+                    novoParticipa.ConsorcioId <- consorcioId
+                    novoParticipa.DataEntrada <- now
+                    novoParticipa.Status <- "Participando"
 
                     db.Participa.Add novoParticipa |> ignore
                     db.SaveChanges() |> ignore
@@ -121,12 +121,12 @@ let rotaListarParticipantes options =
 
 let rotaListarConsorciosParticipando options =
     GET
-    >=> pathScan "/participantes/%d" (fun participanteId ->
+    >=> pathScan "/participantes/%d" (fun usuarioId ->
         let db = new AppDbContext(options)
 
         let consorcios =
             db.Participa
-            |> Seq.filter (fun p -> p.UsuarioId = participanteId)
+            |> Seq.filter (fun p -> p.UsuarioId = usuarioId)
             |> Seq.map (fun p -> p.ConsorcioId)
             |> Seq.toList
 

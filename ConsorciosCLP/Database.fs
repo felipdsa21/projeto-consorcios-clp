@@ -5,46 +5,45 @@ open System
 open System.ComponentModel.DataAnnotations
 open System.ComponentModel.DataAnnotations.Schema
 
-[<CLIMutable>]
-type Consorcio =
-    { [<Key>]
-      [<DatabaseGenerated(DatabaseGeneratedOption.Identity)>]
-      Id: int
 
-      [<Required>]
-      Nome: string
+type Consorcio() =
+    [<Key>]
+    [<DatabaseGenerated(DatabaseGeneratedOption.Identity)>]
+    member val Id = 0 with get, set
 
-      [<Required>]
-      DataInicio: DateOnly
+    [<Required>]
+    member val Nome = "" with get, set
 
-      [<Required>]
-      DataFim: DateOnly
+    [<Required>]
+    member val DataInicio = DateOnly.MinValue with get, set
 
-      [<Required>]
-      ValorTotal: float
+    [<Required>]
+    member val DataFim = DateOnly.MinValue with get, set
 
-      [<Required>]
-      Parcelas: int
+    [<Required>]
+    member val ValorTotal = 0.0 with get, set
 
-      [<Required>]
-      LimiteParticipantes: int
+    [<Required>]
+    member val Parcelas = 0 with get, set
 
-      [<Required>]
-      Status: string }
+    [<Required>]
+    member val LimiteParticipantes = 0 with get, set
+
+    [<Required>]
+    member val Status = "" with get, set
 
 
-[<CLIMutable>]
 [<PrimaryKey("UsuarioId", "ConsorcioId")>]
-type Participa =
-    { ConsorcioId: int
+type Participa() =
+    member val ConsorcioId = 0 with get, set
 
-      UsuarioId: int
+    member val UsuarioId = 0 with get, set
 
-      [<Required>]
-      DataEntrada: DateTime
+    [<Required>]
+    member val DataEntrada = DateTime.MinValue with get, set
 
-      [<Required>]
-      Status: string }
+    [<Required>]
+    member val Status = "" with get, set
 
 
 type AppDbContext(options: DbContextOptions<AppDbContext>) =
