@@ -1,5 +1,5 @@
 # Rotas do microserviço
-Os identificadores nos segmentos das URLs são números inteiros.
+Este documento descreve as rotas do microserviço de consórcios, incluindo detalhes das requisições, respostas e possíveis erros. Os identificadores de consórcios e participantes são números inteiros.
 
 Em caso de erro, o corpo da resposta terá o seguinte formato:
 
@@ -13,6 +13,8 @@ Em caso de erro, o corpo da resposta terá o seguinte formato:
 ```http
 POST /consorcios
 ```
+
+Cria um novo consórcio com as informações fornecidas no corpo da requisição.
 
 ### Corpo da requisição:
 ```json
@@ -41,6 +43,8 @@ POST /consorcios
 ## Listar consórcios
 GET /consorcios
 
+Retorna uma lista de todos os consórcios cadastrados.
+
 ### Corpo da resposta:
 ```json
 {
@@ -68,6 +72,8 @@ GET /consorcios
 GET /consorcios/{consorcio_id}
 ```
 
+Retorna os detalhes de um consórcio específico.
+
 ### Corpo da resposta:
 ```json
 {
@@ -94,6 +100,8 @@ GET /consorcios/{consorcio_id}
 PUT /consorcios/{consorcio_id}
 ```
 
+Atualiza as informações de um consórcio específico.
+
 ### Corpo da requisição:
 ```json
 {
@@ -119,6 +127,8 @@ PUT /consorcios/{consorcio_id}
 DELETE /consorcios/{consorcio_id}
 ```
 
+Remove um consórcio específico.
+
 ### Erros:
 - 404 Consórcio não existe
 
@@ -126,6 +136,8 @@ DELETE /consorcios/{consorcio_id}
 ```http
 POST /consorcios/{consorcio_id}/participantes
 ```
+
+Adiciona um usuário a um consórcio.
 
 ### Corpo da requisição:
 ```json
@@ -145,6 +157,8 @@ POST /consorcios/{consorcio_id}/participantes
 DELETE /consorcios/{consorcio_id}/participantes/{usuario_id}
 ```
 
+Remove a participação de um usuário em um consórcio.
+
 ### Erros:
 - 404 Consórcio não existe
 - 404 Não está participando no consórcio
@@ -154,6 +168,8 @@ DELETE /consorcios/{consorcio_id}/participantes/{usuario_id}
 ```http
 GET /consorcios/{consorcio_id}/participantes
 ```
+
+Retorna uma lista dos usuários participantes de um consórcio específico.
 
 ### Corpo da resposta:
 ```json
@@ -169,6 +185,8 @@ GET /consorcios/{consorcio_id}/participantes
 ```http
 GET /participantes/{usuario_id}
 ```
+
+Retorna uma lista de consórcios em que um usuário específico participa.
 
 ### Corpo da resposta:
 ```json
