@@ -136,9 +136,19 @@ POST /consorcios/{consorcio_id}/participantes
 
 ### Erros:
 - 404 Consórcio não existe
-- 409 Já está participante no consórcio
+- 409 Já está participando no consórcio
 - 410 Tentou entrar antes ou depois do prazo
 - 403 Limite de participantes excedido
+
+## Sair do consórcio
+```http
+DELETE /consorcios/{consorcio_id}/participantes/{usuario_id}
+```
+
+### Erros:
+- 404 Consórcio não existe
+- 404 Não está participando no consórcio
+- 410 Tentou sair antes ou depois do prazo
 
 ## Listar participantes do consórcio
 ```http

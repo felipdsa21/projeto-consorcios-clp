@@ -148,7 +148,17 @@ let tests =
               : ResponseListarConsorciosParticipando
               |> ignore
 
-          // Must be the last
+          testCase "sair do consórcio"
+          <| fun _ ->
+              let url = sprintf "/consorcios/%d/participantes/%d" 1 1
+
+              let code, res =
+                  runWebServer ()
+                  |> reqResp DELETE url "" None None DecompressionMethods.None id getResponse
+
+              Expect.equal HttpStatusCode.OK code "should not error"
+              Expect.equal "" res "response should be empty"
+
           testCase "apagar um consórcio"
           <| fun _ ->
               let url = sprintf "/consorcios/%d" 1

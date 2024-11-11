@@ -115,6 +115,29 @@ let rotaParticiparEmConsorcio options =
                     OK ""))
 
 
+let rotaSairDoConsorcio options =
+    DELETE
+    >=> pathScan "/consorcios/%d/participantes/%d" (fun (consorcioId, usuarioId) ->
+        let db = new AppDbContext(options)
+        let c = db.Consorcios.Find consorcioId
+
+        let now = DateTime.Now
+        let today = DateOnly.FromDateTime now
+
+        if isNullObj c then
+            jsonResponse not_found { Mensagem = ERRO_CONSORCIO_NAO_EXISTE }
+        else if today < c.DataInicio || today > c.DataFim then
+            jsonResponse gone { Mensagem = ERRO_FORA_DO_PRAZO }
+        else
+            let participa = db.Participa.Find(consorcioId, usuarioId)
+
+            if isNullObj participa then
+                jsonResponse not_found { Mensagem = ERRO_NAO_PARTICIPANDO }
+            else
+                db.Participa.Remove participa |> ignore
+                db.SaveChanges() |> ignore
+                OK "")
+
 let rotaListarParticipantes options =
     GET
     >=> pathScan "/consorcios/%d/participantes" (fun consorcioId ->
@@ -167,6 +190,7 @@ let getRoutes options =
           rotaAlterarConsorcio options
           rotaApagarConsorcio options
           rotaParticiparEmConsorcio options
+          rotaSairDoConsorcio options
           rotaListarParticipantes options
           rotaListarConsorciosParticipando options
           rotaNaoExiste ]
