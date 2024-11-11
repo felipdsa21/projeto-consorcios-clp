@@ -136,6 +136,7 @@ POST /consorcios/{consorcio_id}/participantes
 
 ### Erros:
 - 404 Consórcio não existe
+- 409 Já está participante no consórcio
 - 410 Tentou entrar antes ou depois do prazo
 - 403 Limite de participantes excedido
 

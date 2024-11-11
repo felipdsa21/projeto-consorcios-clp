@@ -4,6 +4,7 @@ open System.Runtime.Serialization
 
 let ERRO_CONSORCIO_NAO_EXISTE = "Consórcio não existe"
 let ERRO_FORA_DO_PRAZO = "Fora de prazo"
+let ERRO_JA_PARTICIPANDO = "Já está participando"
 let ERRO_LIMITE_PARTICIPANTES_EXCEDIDO = "Limite de participantes excedido"
 let ERRO_ROTA_NAO_EXISTE = "Rota não existe"
 

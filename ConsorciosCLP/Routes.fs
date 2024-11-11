@@ -93,8 +93,10 @@ let rotaParticiparEmConsorcio options =
 
             if isNullObj c then
                 jsonResponse not_found { Mensagem = ERRO_CONSORCIO_NAO_EXISTE }
-            elif today.CompareTo c.DataInicio > 0 && today.CompareTo c.DataFim > 0 then
+            else if today < c.DataInicio || today > c.DataFim then
                 jsonResponse gone { Mensagem = ERRO_FORA_DO_PRAZO }
+            else if not (isNullObj (db.Participa.Find(consorcioId, reqData.UsuarioId))) then
+                jsonResponse conflict { Mensagem = ERRO_JA_PARTICIPANDO }
             else
                 let qtdParticipantes =
                     db.Participa |> Seq.filter (fun p -> p.ConsorcioId = consorcioId) |> Seq.length
