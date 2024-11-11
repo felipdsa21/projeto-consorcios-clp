@@ -1,4 +1,4 @@
-module ConsorciosCLP.Database
+module ConsorciosCLP.Models
 
 open Microsoft.EntityFrameworkCore
 open System

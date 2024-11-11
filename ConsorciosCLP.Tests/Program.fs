@@ -1,6 +1,6 @@
 module ConsorciosCLP.Tests.Program
 
-open ConsorciosCLP.Database
+open ConsorciosCLP.Models
 open ConsorciosCLP.Requests
 open ConsorciosCLP.Routes
 open Expecto

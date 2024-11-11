@@ -1,8 +1,8 @@
 module ConsorciosCLP.Program
 
-open Database
 open Microsoft.EntityFrameworkCore
 open Microsoft.Extensions.Configuration
+open Models
 open Routes
 open Suave
 open System.IO

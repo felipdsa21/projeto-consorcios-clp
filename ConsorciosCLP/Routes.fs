@@ -1,7 +1,7 @@
 module ConsorciosCLP.Routes
 
-open Database
-open DomainDtoMapper
+open ModelDtoMapper
+open Models
 open Requests
 open Suave
 open Suave.Filters

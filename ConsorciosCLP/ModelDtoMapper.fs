@@ -1,6 +1,6 @@
-module ConsorciosCLP.DomainDtoMapper
+module ConsorciosCLP.ModelDtoMapper
 
-open Database
+open Models
 open Requests
 open System
 

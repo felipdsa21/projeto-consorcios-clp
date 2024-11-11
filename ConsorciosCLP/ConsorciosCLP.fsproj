@@ -6,9 +6,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Utils.fs" />
-    <Compile Include="Database.fs" />
+    <Compile Include="Models.fs" />
     <Compile Include="Requests.fs" />
-    <Compile Include="DomainDtoMapper.fs" />
+    <Compile Include="ModelDtoMapper.fs" />
     <Compile Include="Routes.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
