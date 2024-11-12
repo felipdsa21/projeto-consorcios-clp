@@ -132,6 +132,17 @@ Remove um consórcio específico.
 ### Erros:
 - 404 consorcio_nao_existe -> Consórcio não existe
 
+## Contemplar um participante do consórcio
+```http
+POST /consorcios/{consorcio_id}/contemplar
+```
+
+Contempla um participante aleatório do consórcio que ainda não tenha sido contemplado.
+
+### Erros:
+- 404 consorcio_nao_existe -> Consórcio não existe
+- 404 sem_participantes -> Sem participantes não contemplados
+
 ## Participar em um consórcio
 ```http
 POST /consorcios/{consorcio_id}/participantes
@@ -163,6 +174,7 @@ Remove a participação de um usuário em um consórcio.
 - 404 consorcio_nao_existe -> Consórcio não existe
 - 404 nao_participando -> Não está participando no consórcio
 - 410 fora_do_prazo -> Tentou sair antes ou depois do prazo
+- 410 ja_contemplado -> O participante já foi contemplado
 
 ## Listar participantes do consórcio
 ```http
@@ -174,7 +186,18 @@ Retorna uma lista dos usuários participantes de um consórcio específico.
 ### Corpo da resposta:
 ```json
 {
-  "usuarios": [1, 2]
+  "participantes": [
+    {
+      "usuario_id": 1,
+      "data_entrada": "2024-10-01T12:00:00",
+      "status": "Contemplado"
+    },
+    {
+      "usuario_id": 2,
+      "data_entrada": "2024-11-01T12:00:00",
+      "status": "Participando"
+    }
+  ]
 }
 ```
 
@@ -191,6 +214,20 @@ Retorna uma lista de consórcios em que um usuário específico participa.
 ### Corpo da resposta:
 ```json
 {
-  "consorcios": [1, 2, 3]
+    {
+      "consorcio_id": 1,
+      "data_entrada": "2024-10-01T12:00:00",
+      "status": "Contemplado"
+    },
+    {
+      "consorcio_id": 2,
+      "data_entrada": "2024-11-01T12:00:00",
+      "status": "Participando"
+    },
+    {
+      "consorcio_id": 3,
+      "data_entrada": "2024-12-01T12:00:00",
+      "status": "Participando"
+    }
 }
 ```

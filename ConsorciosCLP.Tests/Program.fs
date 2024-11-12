@@ -122,6 +122,17 @@ let tests =
               Expect.equal HttpStatusCode.OK code "should not error"
               Expect.equal "" res "response should be empty"
 
+          testCase "contemplar um participante do consórcio"
+          <| fun _ ->
+              let url = sprintf "/consorcios/%d/contemplar" 1
+
+              let code, res =
+                  runWebServer ()
+                  |> reqResp POST url "" None None DecompressionMethods.None id getResponse
+
+              Expect.equal HttpStatusCode.OK code "should not error"
+              Expect.equal "" res "response should be empty"
+
           testCase "listar participantes do consórcio"
           <| fun _ ->
               let url = sprintf "/consorcios/%d/participantes" 1
@@ -150,6 +161,12 @@ let tests =
 
           testCase "sair do consórcio"
           <| fun _ ->
+              let db = new AppDbContext(options)
+              let participa = db.Participa.Find(1, 1)
+              participa.Status <- "Participando"
+              db.Participa.Update participa |> ignore
+              db.SaveChanges() |> ignore
+
               let url = sprintf "/consorcios/%d/participantes/%d" 1 1
 
               let code, res =

@@ -4,10 +4,12 @@ open System.Runtime.Serialization
 
 let ERRO_CONSORCIO_NAO_EXISTE = "consorcio_nao_existe"
 let ERRO_FORA_DO_PRAZO = "fora_do_prazo"
+let ERRO_JA_CONTEMPLADO = "ja_contemplado"
 let ERRO_JA_PARTICIPANDO = "ja_participando"
 let ERRO_LIMITE_PARTICIPANTES_EXCEDIDO = "limite_participantes_excedido"
 let ERRO_NAO_PARTICIPANDO = "nao_participando"
 let ERRO_ROTA_NAO_EXISTE = "rota_nao_existe"
+let ERRO_SEM_PARTICIPANTES = "sem_participantes"
 
 
 [<DataContract>]
@@ -112,12 +114,35 @@ type RequestParticiparEmConsorcio =
 
 
 [<DataContract>]
+type ResponseParticipante =
+    { [<field: DataMember(Name = "usuario_id", IsRequired = true)>]
+      UsuarioId: int
+
+      [<field: DataMember(Name = "data_entrada", IsRequired = true)>]
+      DataEntrada: string
+
+      [<field: DataMember(Name = "status", IsRequired = true)>]
+      Status: string }
+
+[<DataContract>]
 type ResponseListarParticipantes =
     { [<field: DataMember(Name = "usuarios", IsRequired = true)>]
-      Usuarios: int list }
+      Participantes: ResponseParticipante list }
+
+
+[<DataContract>]
+type ResponseConsorcioParticipando =
+    { [<field: DataMember(Name = "consorcio_id", IsRequired = true)>]
+      ConsorcioId: int
+
+      [<field: DataMember(Name = "data_entrada", IsRequired = true)>]
+      DataEntrada: string
+
+      [<field: DataMember(Name = "status", IsRequired = true)>]
+      Status: string }
 
 
 [<DataContract>]
 type ResponseListarConsorciosParticipando =
     { [<field: DataMember(Name = "consorcios", IsRequired = true)>]
-      Consorcios: int list }
+      Consorcios: ResponseConsorcioParticipando list }

@@ -81,6 +81,27 @@ let rotaApagarConsorcio options =
             OK "")
 
 
+let rotaContemplarParticipante options =
+    POST
+    >=> pathScan "/consorcios/%d/contemplar" (fun consorcioId ->
+        let db = new AppDbContext(options)
+        let c = db.Consorcios.Find consorcioId
+
+        if isNullObj c then
+            jsonResponse not_found { Mensagem = ERRO_CONSORCIO_NAO_EXISTE }
+        else
+            let participa =
+                db.Participa |> Seq.filter (fun p -> p.Status = "Participando") |> Seq.head
+
+            if isNullObj participa then
+                jsonResponse not_found { Mensagem = ERRO_SEM_PARTICIPANTES }
+            else
+                participa.Status <- "Contemplado"
+                db.Participa.Update participa |> ignore
+                db.SaveChanges() |> ignore
+                OK "")
+
+
 let rotaParticiparEmConsorcio options =
     POST
     >=> pathScan "/consorcios/%d/participantes" (fun consorcioId ->
@@ -133,6 +154,8 @@ let rotaSairDoConsorcio options =
 
             if isNullObj participa then
                 jsonResponse not_found { Mensagem = ERRO_NAO_PARTICIPANDO }
+            else if participa.Status = "Contemplado" then
+                jsonResponse gone { Mensagem = ERRO_JA_CONTEMPLADO }
             else
                 db.Participa.Remove participa |> ignore
                 db.SaveChanges() |> ignore
@@ -147,13 +170,13 @@ let rotaListarParticipantes options =
         if isNullObj c then
             jsonResponse not_found { Mensagem = ERRO_CONSORCIO_NAO_EXISTE }
         else
-            let usuarios =
+            let participantes =
                 db.Participa
                 |> Seq.filter (fun p -> p.ConsorcioId = consorcioId)
-                |> Seq.map (fun p -> p.UsuarioId)
+                |> Seq.map participaToResponse
                 |> Seq.toList
 
-            let response: ResponseListarParticipantes = { Usuarios = usuarios }
+            let response: ResponseListarParticipantes = { Participantes = participantes }
             jsonResponse ok response)
 
 
@@ -165,7 +188,7 @@ let rotaListarConsorciosParticipando options =
         let consorcios =
             db.Participa
             |> Seq.filter (fun p -> p.UsuarioId = usuarioId)
-            |> Seq.map (fun p -> p.ConsorcioId)
+            |> Seq.map consorcioParticipaToResponse
             |> Seq.toList
 
         let response: ResponseListarConsorciosParticipando = { Consorcios = consorcios }
@@ -189,6 +212,7 @@ let getRoutes options =
           rotaListarConsorcios options
           rotaAlterarConsorcio options
           rotaApagarConsorcio options
+          rotaContemplarParticipante options
           rotaParticiparEmConsorcio options
           rotaSairDoConsorcio options
           rotaListarParticipantes options

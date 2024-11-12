@@ -32,3 +32,15 @@ let consorcioToResponse (c: Consorcio) : ResponseDetalharConsorcio =
       QtdParcelas = c.QtdParcelas
       LimiteParticipantes = c.LimiteParticipantes
       Status = c.Status }
+
+
+let participaToResponse (p: Participa) : ResponseParticipante =
+    { UsuarioId = p.UsuarioId
+      DataEntrada = p.DataEntrada.ToString "O"
+      Status = p.Status }
+
+
+let consorcioParticipaToResponse (p: Participa) : ResponseConsorcioParticipando =
+    { ConsorcioId = p.ConsorcioId
+      DataEntrada = p.DataEntrada.ToString "O"
+      Status = p.Status }
