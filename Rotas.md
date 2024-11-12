@@ -5,7 +5,7 @@ Em caso de erro, o corpo da resposta terá o seguinte formato:
 
 ```json
 {
-  "mensagem": "Consórcio não existe"
+  "mensagem": "consorcio_nao_existe"
 }
 ```
 
@@ -93,7 +93,7 @@ Retorna os detalhes de um consórcio específico.
 ```
 
 ### Erros:
-- 404 Consórcio não existe
+- 404 consorcio_nao_existe -> Consórcio não existe
 
 ## Alterar um consórcio
 ```http
@@ -120,7 +120,7 @@ Atualiza as informações de um consórcio específico.
 ```
 
 ### Erros:
-- 404 Consórcio não existe
+- 404 consorcio_nao_existe -> Consórcio não existe
 
 ## Apagar um consórcio
 ```http
@@ -130,7 +130,7 @@ DELETE /consorcios/{consorcio_id}
 Remove um consórcio específico.
 
 ### Erros:
-- 404 Consórcio não existe
+- 404 consorcio_nao_existe -> Consórcio não existe
 
 ## Participar em um consórcio
 ```http
@@ -147,10 +147,10 @@ Adiciona um usuário a um consórcio.
 ```
 
 ### Erros:
-- 404 Consórcio não existe
-- 409 Já está participando no consórcio
-- 410 Tentou entrar antes ou depois do prazo
-- 403 Limite de participantes excedido
+- 404 consorcio_nao_existe -> Consórcio não existe
+- 403 limite_participantes_excedido -> Limite de participantes excedido
+- 409 ja_participando -> Já está participando no consórcio
+- 410 fora_do_prazo -> Tentou entrar antes ou depois do prazo
 
 ## Sair do consórcio
 ```http
@@ -160,9 +160,9 @@ DELETE /consorcios/{consorcio_id}/participantes/{usuario_id}
 Remove a participação de um usuário em um consórcio.
 
 ### Erros:
-- 404 Consórcio não existe
-- 404 Não está participando no consórcio
-- 410 Tentou sair antes ou depois do prazo
+- 404 consorcio_nao_existe -> Consórcio não existe
+- 404 nao_participando -> Não está participando no consórcio
+- 410 fora_do_prazo -> Tentou sair antes ou depois do prazo
 
 ## Listar participantes do consórcio
 ```http
@@ -179,7 +179,7 @@ Retorna uma lista dos usuários participantes de um consórcio específico.
 ```
 
 ### Erros:
-- 404 Consórcio não existe
+- 404 consorcio_nao_existe -> Consórcio não existe
 
 ## Listar consórcios em que o usuário participa
 ```http
