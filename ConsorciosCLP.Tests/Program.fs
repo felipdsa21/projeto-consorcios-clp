@@ -131,7 +131,9 @@ let tests =
                   |> reqResp POST url "" None None DecompressionMethods.None id getResponse
 
               Expect.equal HttpStatusCode.OK code "should not error"
-              Expect.equal "" res "response should be empty"
+              jsonToObj res
+              : ResponseContemplarParticipante
+              |> ignore
 
           testCase "listar participantes do consórcio"
           <| fun _ ->

@@ -41,7 +41,9 @@ Cria um novo consórcio com as informações fornecidas no corpo da requisição
 ```
 
 ## Listar consórcios
+```
 GET /consorcios
+```
 
 Retorna uma lista de todos os consórcios cadastrados.
 
@@ -140,6 +142,13 @@ POST /consorcios/{consorcio_id}/contemplar
 ```
 
 Contempla um participante aleatório do consórcio que ainda não tenha sido contemplado.
+
+### Corpo da resposta:
+```json
+{
+  "usuario_id": 1
+}
+```
 
 ### Erros:
 - 404 consorcio_nao_existe -> Consórcio não existe

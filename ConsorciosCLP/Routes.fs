@@ -100,7 +100,9 @@ let rotaContemplarParticipante options =
                 participa.Status <- "Contemplado"
                 db.Participa.Update participa |> ignore
                 db.SaveChanges() |> ignore
-                OK "")
+
+                let response: ResponseContemplarParticipante = { UsuarioId = participa.UsuarioId }
+                jsonResponse ok response)
 
 
 let rotaParticiparEmConsorcio options =

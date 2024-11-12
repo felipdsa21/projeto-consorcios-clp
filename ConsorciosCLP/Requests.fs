@@ -111,6 +111,12 @@ type ResponseListarConsorcios =
 
 
 [<DataContract>]
+type ResponseContemplarParticipante =
+    { [<field: DataMember(Name = "usuario_id", IsRequired = true)>]
+      UsuarioId: int }
+
+
+[<DataContract>]
 type RequestParticiparEmConsorcio =
     { [<field: DataMember(Name = "usuario_id", IsRequired = true)>]
       UsuarioId: int }
@@ -126,6 +132,7 @@ type ResponseParticipante =
 
       [<field: DataMember(Name = "status", IsRequired = true)>]
       Status: string }
+
 
 [<DataContract>]
 type ResponseListarParticipantes =
