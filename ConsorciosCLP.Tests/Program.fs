@@ -17,7 +17,7 @@ open Testing
 [<Tests>]
 let tests =
     let config =
-        defaultConfig.withBindings [ HttpBinding.create HTTP IPAddress.Loopback 9001us ]
+        routesConfig.withBindings [ HttpBinding.create HTTP IPAddress.Loopback 9001us ]
 
     let options =
         DbContextOptionsBuilder<AppDbContext>()
