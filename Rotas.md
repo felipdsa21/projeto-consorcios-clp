@@ -51,6 +51,7 @@ Retorna uma lista de todos os consórcios cadastrados.
   "consorcios": [
     {
       "id": 1,
+      "data_criacao": "2024-09-01T12:00:00",
       "nome": "Consórcio",
       "descricao": "Lorem ipsum",
       "imagem": "",
@@ -78,6 +79,7 @@ Retorna os detalhes de um consórcio específico.
 ```json
 {
   "id": 1,
+  "data_criacao": "2024-09-01T12:00:00",
   "nome": "Consórcio",
   "descricao": "Lorem ipsum",
   "imagem": "",

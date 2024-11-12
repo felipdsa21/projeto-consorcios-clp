@@ -67,6 +67,9 @@ type ResponseDetalharConsorcio =
     { [<field: DataMember(Name = "id", IsRequired = true)>]
       Id: int
 
+      [<field: DataMember(Name = "data_criacao", IsRequired = true)>]
+      DataCriacao: string
+
       [<field: DataMember(Name = "nome", IsRequired = true)>]
       Nome: string
 

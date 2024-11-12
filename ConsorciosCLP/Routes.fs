@@ -18,6 +18,7 @@ let rotaCriarConsorcio options =
     >=> jsonRequest (fun (reqData: RequestAlterarConsorcio) ->
         let c = Consorcio()
         updateConsorcioFromRequest reqData c
+        c.DataCriacao <- DateTime.Now
 
         let db = new AppDbContext(options)
         db.Consorcios.Add c |> ignore

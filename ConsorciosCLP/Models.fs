@@ -12,6 +12,9 @@ type Consorcio() =
     member val Id = 0 with get, set
 
     [<Required>]
+    member val DataCriacao = DateTime.MinValue with get, set
+
+    [<Required>]
     member val Nome = "" with get, set
 
     [<Required>]

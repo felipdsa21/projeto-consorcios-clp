@@ -21,6 +21,7 @@ let updateConsorcioFromRequest (r: RequestAlterarConsorcio) (c: Consorcio) =
 
 let consorcioToResponse (c: Consorcio) : ResponseDetalharConsorcio =
     { Id = c.Id
+      DataCriacao = c.DataCriacao.ToString "O"
       Nome = c.Nome
       Descricao = c.Descricao
       Imagem = c.Imagem
